@@ -17,6 +17,7 @@ const refs = {
 }
 let searchedWord = ''
 let page = 1;
+let lightbox;
 
 refs.form.addEventListener('submit', onSearchClick);
 refs.loadMoreBtn.addEventListener('click', onLoadMoreClick);
