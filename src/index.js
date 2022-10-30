@@ -4,8 +4,11 @@ import pictureMarkupHdb from './templates/pictures-markup.hbs';
 import { fetchPictures } from './js/pixabay-fetch.js';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
+import debounce from 'lodash.debounce';
+
 
 const Handlebars = require("handlebars");
+const DEBOUNCE_DELAY = 300;
 // const axios = require('axios').default;
 
 const refs = {
@@ -19,6 +22,10 @@ let searchedWord = '';
 let page = 1;
 let lightbox;
 
+refs.searchBtn.disabled = true;
+console.log(refs.searchBtn);
+
+refs.input.addEventListener('input', debounce(onClickInpit, DEBOUNCE_DELAY));
 refs.form.addEventListener('submit', onSearchClick);
 refs.loadMoreBtn.addEventListener('click', onLoadMoreClick);
 
@@ -27,12 +34,13 @@ function onSearchClick(evt){
   cleanMarkup();
   evt.preventDefault();
   
-
   const {
     elements: { searchQuery }
   } = evt.currentTarget;
-  console.log(searchQuery.value);
+  // console.log(searchQuery.value);
   searchedWord = searchQuery.value.trim();
+
+
 
   fetchPictures(searchedWord, page).then( res => 
     {if(res.hits.length <= 0){
@@ -53,8 +61,7 @@ function onSearchClick(evt){
     createPicturesMarkup(res);
     lightbox = new SimpleLightbox('.gallery a', {captionDelay: 250});
     lightbox.refresh();
-    return}
-    
+    return} 
   ).catch(err => 
     Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.'))
     
@@ -93,5 +100,14 @@ function loadBtnAppear(){
   refs.loadMoreBtn.classList.remove('is-hidden')
 }
 
+
+function onClickInpit(evt){
+  console.log(evt.target.value.trim())
+  if(evt.target.value.trim()){
+    refs.searchBtn.disabled = false;
+  } else {
+    refs.searchBtn.disabled = true;
+  }
+}
 
 
