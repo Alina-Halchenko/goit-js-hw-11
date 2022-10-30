@@ -57,8 +57,9 @@ function onSearchClick(evt){
     lightbox = new SimpleLightbox('.gallery a', {captionDelay: 250});
 }
 
-function onLoadMoreClick(){
+function onLoadMoreClick(evt){
   page +=1;
+  evt.preventDefault()
 
   fetchPictures(searchedWord, page).then( res => 
     {if (res.hits.length < 40 && res.hits.length !== 0){
