@@ -16,6 +16,7 @@ const refs = {
   gallery: document.querySelector('.gallery')
 }
 let searchedWord = ''
+let page = 1;
 
 refs.form.addEventListener('submit', onSearchClick);
 refs.loadMoreBtn.addEventListener('click', onLoadMoreClick);
@@ -31,21 +32,44 @@ function onSearchClick(evt){
   console.log(searchQuery.value);
 
   searchedWord = searchQuery.value.trim();
+  page = 1;
 
-  fetchPictures(searchedWord).then( res => 
+  fetchPictures(searchedWord, page).then( res => 
     {if(res.hits.length <= 0){
       return Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
     }
-    console.log(res.totalHits)
+    if (res.hits.length < 40 && res.hits.length !== 0){
+      Notiflix.Notify.info("We're sorry, but you've reached the end of search results.")
+      lightbox.refresh();
+      return createPicturesMarkup(res)
+    };
+
     Notiflix.Notify.success(`Hooray! We found ${res.totalHits} images`);
+    setTimeout(loadBtnAppear, 2000);
+    // refs.loadMoreBtn.classList.remove('is-hidden');
+    lightbox.refresh();
     return createPicturesMarkup(res)}
   ).catch(err => 
     Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.'))
   
+
+
+    lightbox = new SimpleLightbox('.gallery a', {captionDelay: 250});
 }
 
 function onLoadMoreClick(){
-  
+  page +=1;
+
+  fetchPictures(searchedWord, page).then( res => 
+    {if (res.hits.length < 40 && res.hits.length !== 0){
+      refs.loadMoreBtn.classList.add('is-hidden');
+      Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
+      lightbox.refresh();
+      return createPicturesMarkup(res)
+    }
+
+    lightbox.refresh();
+    return createPicturesMarkup(res)})
 }
 
 function createPicturesMarkup(res){
@@ -57,6 +81,10 @@ function createPicturesMarkup(res){
 
 function cleanMarkup(){
   refs.gallery.innerHTML = '';
+}
+
+function loadBtnAppear(){
+  refs.loadMoreBtn.classList.remove('is-hidden')
 }
 
 
