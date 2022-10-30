@@ -23,7 +23,6 @@ let page = 1;
 let lightbox;
 
 refs.searchBtn.disabled = true;
-console.log(refs.searchBtn);
 
 refs.input.addEventListener('input', debounce(onClickInpit, DEBOUNCE_DELAY));
 refs.form.addEventListener('submit', onSearchClick);
