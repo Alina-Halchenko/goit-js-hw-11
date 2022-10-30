@@ -1,9 +1,9 @@
 import './css/styles.css';
 import Notiflix from 'notiflix';
+import pictureMarkupHdb from './templates/pictures-markup.hbs';
+import { fetchPictures } from './js/pixabay-fetch.js';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
-import pictureMarkupHdb from './templates/pictures-markup.hbs';
-import { fetchPictures } from './js/pixabay-fetch.js'
 
 const Handlebars = require("handlebars");
 // const axios = require('axios').default;
@@ -15,7 +15,7 @@ const refs = {
   form: document.querySelector('.search-form'),
   gallery: document.querySelector('.gallery')
 }
-let searchedWord = ''
+let searchedWord = '';
 let page = 1;
 let lightbox;
 
@@ -24,16 +24,15 @@ refs.loadMoreBtn.addEventListener('click', onLoadMoreClick);
 
 
 function onSearchClick(evt){
-  evt.preventDefault();
   cleanMarkup();
+  evt.preventDefault();
+  
 
   const {
     elements: { searchQuery }
   } = evt.currentTarget;
   console.log(searchQuery.value);
-
   searchedWord = searchQuery.value.trim();
-  page = 1;
 
   fetchPictures(searchedWord, page).then( res => 
     {if(res.hits.length <= 0){
@@ -41,21 +40,24 @@ function onSearchClick(evt){
     }
     if (res.hits.length < 40 && res.hits.length !== 0){
       Notiflix.Notify.info("We're sorry, but you've reached the end of search results.")
+      createPicturesMarkup(res);
+
+      lightbox = new SimpleLightbox('.gallery a', {captionDelay: 250});
       lightbox.refresh();
-      return createPicturesMarkup(res)
+      return;
     };
 
     Notiflix.Notify.success(`Hooray! We found ${res.totalHits} images`);
     setTimeout(loadBtnAppear, 2000);
-    // refs.loadMoreBtn.classList.remove('is-hidden');
+    
+    createPicturesMarkup(res);
+    lightbox = new SimpleLightbox('.gallery a', {captionDelay: 250});
     lightbox.refresh();
-    return createPicturesMarkup(res)}
+    return}
+    
   ).catch(err => 
     Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.'))
-  
-
-
-    lightbox = new SimpleLightbox('.gallery a', {captionDelay: 250});
+    
 }
 
 function onLoadMoreClick(evt){
@@ -83,10 +85,13 @@ function createPicturesMarkup(res){
 
 function cleanMarkup(){
   refs.gallery.innerHTML = '';
+  page = 1;
+  refs.loadMoreBtn.classList.add('is-hidden');
 }
 
 function loadBtnAppear(){
   refs.loadMoreBtn.classList.remove('is-hidden')
 }
+
 
 
