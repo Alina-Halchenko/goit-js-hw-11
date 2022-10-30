@@ -102,7 +102,6 @@ function loadBtnAppear(){
 
 
 function onClickInpit(evt){
-  console.log(evt.target.value.trim())
   if(evt.target.value.trim()){
     refs.searchBtn.disabled = false;
   } else {
