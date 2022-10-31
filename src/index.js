@@ -42,7 +42,7 @@ async function onSearchClick(evt){
   try {
     const fetchedPicturesResult = await fetchPictures(searchedWord, page);
     if(fetchedPicturesResult.hits.length <= 0){
-      return Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
+      return Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.(check for 0 length)')
     }
 
     createPicturesMarkup(fetchedPicturesResult.hits);
