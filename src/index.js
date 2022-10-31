@@ -45,7 +45,7 @@ async function onSearchClick(evt){
       return Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.(check for 0 length)')
     }
 
-    createPicturesMarkup(fetchedPicturesResult.hits);
+    createPicturesMarkup(fetchedPicturesResult);
     lightbox = new SimpleLightbox('.gallery a', {captionDelay: 250});
     lightbox.refresh();
     Notiflix.Notify.success(`Hooray! We found ${fetchedPicturesResult.totalHits} images`);
@@ -67,7 +67,7 @@ async function onLoadMoreClick(){
     const moreImagesLoaded = await fetchPictures(searchedWord, page);
     const lastPageChecker = Math.ceil(moreImagesLoaded.totalHits / 40);
     lightbox.refresh();
-    createPicturesMarkup(moreImagesLoaded.hits);
+    createPicturesMarkup(moreImagesLoaded);
 
     if (page === lastPageChecker) {
       refs.loadMoreBtn.classList.add('is-hidden');
