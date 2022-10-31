@@ -42,7 +42,7 @@ async function onSearchClick(evt){
   try {
     const fetchedPicturesResult = await fetchPictures(searchedWord, page);
     if(fetchedPicturesResult.hits.length <= 0){
-      return Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.(check for 0 length)')
+      return Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
     }
 
     createPicturesMarkup(fetchedPicturesResult);
@@ -52,7 +52,7 @@ async function onSearchClick(evt){
     setTimeout(loadBtnAppear, 2000);  
 
     if (fetchedPicturesResult.hits.length < 40 && fetchedPicturesResult.hits.length !== 0){
-      Notiflix.Notify.info("We're sorry, but you've reached the end of search results.(initialcheck)")
+      Notiflix.Notify.info("We're sorry, but you've reached the end of search results.")
       return
     };
   } catch(err) {
@@ -66,17 +66,17 @@ async function onLoadMoreClick(){
     page +=1;
     console.log(page, 'page Number')
     const moreImagesLoaded = await fetchPictures(searchedWord, page);
-    const lastPageChecker = Math.ceil(moreImagesLoaded.totalHits / 40);
-
-    console.log(moreImagesLoaded, 'fetch for load');
+    let lastPageChecker = Math.ceil(moreImagesLoaded.totalHits / 40);
+    console.log(moreImagesLoaded.totalHits, 'totalhits')
+    // console.log(moreImagesLoaded, 'fetch for load');
     console.log(lastPageChecker, 'page checker')
     lightbox.refresh();
     createPicturesMarkup(moreImagesLoaded);
 
     if (page === lastPageChecker) {
       refs.loadMoreBtn.classList.add('is-hidden');
-      Notiflix.Notify.failure(
-        "We're sorry, but you've reached the end of search results.(loadbuttoncheck)");
+      Notiflix.Notify.info(
+        "We're sorry, but you've reached the end of search results.");
     }
   } catch(err) {
     Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
