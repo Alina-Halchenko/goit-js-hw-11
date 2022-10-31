@@ -41,19 +41,18 @@ async function onSearchClick(evt){
 
   try {
     const fetchedPicturesResult = await fetchPictures(searchedWord, page);
-
     if(fetchedPicturesResult.hits.length <= 0){
       return Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
     }
 
-    createPicturesMarkup(fetchedPicturesResult);
+    createPicturesMarkup(fetchedPicturesResult.hits);
     lightbox = new SimpleLightbox('.gallery a', {captionDelay: 250});
     lightbox.refresh();
     Notiflix.Notify.success(`Hooray! We found ${fetchedPicturesResult.totalHits} images`);
     setTimeout(loadBtnAppear, 2000);  
 
     if (fetchedPicturesResult.hits.length < 40 && fetchedPicturesResult.hits.length !== 0){
-      Notiflix.Notify.info("We're sorry, but you've reached the end of search results.")
+      Notiflix.Notify.info("We're sorry, but you've reached the end of search results.(initialcheck)")
       return
     };
   } catch(err) {
@@ -62,23 +61,22 @@ async function onSearchClick(evt){
 }
 
 
-async function onLoadMoreClick(evt){
-  evt.preventDefault()
+async function onLoadMoreClick(){
   try {
     page +=1;
     const moreImagesLoaded = await fetchPictures(searchedWord, page);
-
-    if (moreImagesLoaded.hits.length < 40 && moreImagesLoaded.hits.length !== 0){
-      refs.loadMoreBtn.classList.add('is-hidden');
-      Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
-      lightbox.refresh();
-      return createPicturesMarkup(moreImagesLoaded)
-    } 
+    const lastPageChecker = Math.ceil(moreImagesLoaded.totalHits / 40);
     lightbox.refresh();
-    return createPicturesMarkup(moreImagesLoaded);
+    createPicturesMarkup(moreImagesLoaded.hits);
 
+    if (page === lastPageChecker) {
+      refs.loadMoreBtn.classList.add('is-hidden');
+      Notiflix.Notify.failure(
+        "We're sorry, but you've reached the end of search results.(loadbuttoncheck)");
+    }
   } catch(err) {
     Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+    refs.loadMoreBtn.classList.add('is-hidden');
   }
 }
 
