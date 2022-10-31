@@ -64,8 +64,12 @@ async function onSearchClick(evt){
 async function onLoadMoreClick(){
   try {
     page +=1;
+    console.log(page, 'page Number')
     const moreImagesLoaded = await fetchPictures(searchedWord, page);
     const lastPageChecker = Math.ceil(moreImagesLoaded.totalHits / 40);
+
+    console.log(moreImagesLoaded, 'fetch for load');
+    console.log(lastPageChecker, 'page checker')
     lightbox.refresh();
     createPicturesMarkup(moreImagesLoaded);
 
