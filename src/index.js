@@ -85,6 +85,8 @@ async function onLoadMoreClick(){
 }
 
 function createPicturesMarkup(res){
+  console.log(res.hits);
+  console.log(picturesMarkup);
   const picturesMarkup = pictureMarkupHdb(res.hits);
   refs.gallery.insertAdjacentHTML('beforeend', picturesMarkup)
   return picturesMarkup;
