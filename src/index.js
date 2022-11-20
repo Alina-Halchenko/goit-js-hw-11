@@ -70,8 +70,9 @@ async function onLoadMoreClick(){
     console.log(moreImagesLoaded.totalHits, 'totalhits')
     // console.log(moreImagesLoaded, 'fetch for load');
     console.log(lastPageChecker, 'page checker')
-    lightbox.refresh();
     createPicturesMarkup(moreImagesLoaded);
+    lightbox = new SimpleLightbox('.gallery a', {captionDelay: 250});
+    lightbox.refresh();
 
     if (page === lastPageChecker) {
       refs.loadMoreBtn.classList.add('is-hidden');
@@ -85,8 +86,6 @@ async function onLoadMoreClick(){
 }
 
 function createPicturesMarkup(res){
-  console.log(res.hits);
-  console.log(picturesMarkup);
   const picturesMarkup = pictureMarkupHdb(res.hits);
   refs.gallery.insertAdjacentHTML('beforeend', picturesMarkup)
   return picturesMarkup;
